@@ -1,0 +1,34 @@
+name: deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deployment_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies (Backend)
+        run: |
+          cd ./server
+          npm i
+      - name: Install dependencies (Frontend)
+        run: |
+          cd ./client
+          npm i
+      - name: Lint frontend
+        run: npm run lint:client
+      - name: Test vitest
+        run: npm test:vitest
+      - name: Test playwright
+        run: npm test:playwright
+      - name: Test Backend
+        run: npm test
+
+   

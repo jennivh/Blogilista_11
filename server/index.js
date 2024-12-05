@@ -37,6 +37,13 @@ app.get('/', (require, response) => {
   response.send('<h1>Hello world</h1>')
 })
 
+
+app.post('/reset', async (request, response) => {
+  await Person.deleteMany({})
+  response.status(204).end()
+})
+
+module.exports = router
 app.get('/api/persons', (request, response) => {
   Person.find({}).then( p => {
     console.log(p)

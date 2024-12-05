@@ -1,12 +1,16 @@
 const {test, expect} = require('@playwright/test')
+const { beforeEach } = require('node:test')
 
-test('frontpage opens', async ({ page }) => {
-  await page.goto('')
-  await expect(page.locator('h1')).toHaveText('Phonebook')
+beforeEach(async ({ page }) => {
+    await request.post('http:localhost:3001/reset')
+    await page.goto('')
 })
 
-test('add contact', async ({ page }) => {
-  await page.goto('')
+test('frontpage opens', async ({ page }) => {
+    await expect(page.locator('h1')).toHaveText('Phonebook')
+})
+
+test('add contact', async ({ page }) => { 
   await page.getByLabel('name:').fill('John Doe')
   await page.getByLabel('number:').fill('12-3456789')
   await page.getByRole('button', {name: 'add'}).click()

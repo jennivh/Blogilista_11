@@ -41,11 +41,9 @@ jobs:
           npm run build
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run server
-        run: |
-          cd ./server
-          npm run start 
       - name: Run Playwright tests
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: npm run test
    
 

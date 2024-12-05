@@ -10,33 +10,6 @@ const morgan = require('morgan')
 
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status - :response-time ms :body'))
-/*let persons = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456'
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: 3,
-    name: 'Dan Abromav',
-    number: '12-43-234345'
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendick',
-    number: '39-23-6423122'
-  }
-] */
-
-app.post('/reset', async (request, response) => {
-  await Person.deleteMany({})
-  response.status(204).end()
-})
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then( p => {

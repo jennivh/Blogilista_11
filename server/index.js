@@ -11,6 +11,8 @@ const morgan = require('morgan')
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status - :response-time ms :body'))
 
+app.use(express.static(path.resolve(__dirname, 'dist')))
+
 app.get('/api/persons', (request, response) => {
   Person.find({}).then( p => {
     console.log(p)
@@ -103,6 +105,7 @@ const errorHandler = (error, request, response, next) => {
 
   next(error)
 }
+
 
 // tämä tulee kaikkien muiden middlewarejen ja routejen rekisteröinnin jälkeen!
 app.use(errorHandler)

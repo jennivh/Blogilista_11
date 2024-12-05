@@ -4,8 +4,9 @@ const { describe } = require('node:test')
 
 describe("Phonebook", () => {
 
-    beforeEach(async ({ page }) => {
-        await request.post('/reset')
+beforeEach(async ({ page }) => {
+    await request.post('/reset')
+})
 
 test('frontpage opens', async ({ page }) => {
     await page.goto('')

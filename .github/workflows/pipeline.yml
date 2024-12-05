@@ -25,6 +25,8 @@ jobs:
         run: |
           cd ./client
           npm i
+      - name: install dependencies (Playwright)
+        run: npm i
       - name: Lint frontend
         run: |
           cd ./client

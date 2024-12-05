@@ -33,9 +33,10 @@ app.use(morgan(':method :url :status - :response-time ms :body'))
   }
 ] */
 
-app.get('/', (require, response) => {
-  response.send('<h1>Hello world</h1>')
-})
+  app.get('/', (_req, res) => {
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
+  })
+  
 
 
 app.post('/reset', async (request, response) => {

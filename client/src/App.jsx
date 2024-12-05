@@ -1,137 +1,185 @@
-import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import AddBlog from './components/AddBlog'
-import Togglable from './components/Togglable'
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
+import personService from "./services/persons";
+import './App.css'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [filter, setFilter] = useState("");
   const [message, setMessage] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
+  const [color, setColor] = useState({color: 'green'})
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    personService.getAll().then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
 
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+  const addName = (event) => {
+    event.preventDefault();
+    const names = persons.map((p) => p.name);
+    if (names.includes(newName)) {
+      if (
+        window.confirm(
+          `${newName} has already been added to phonebook, do you want to change the old number to the new number?`
+        )
+      ) {
+        const personToChange = persons.find((p) => p.name === newName);
+        const changedPerson = { ...personToChange, number: newNumber };
+        personService.change(changedPerson).then((response) => {
+          setPersons(
+            persons.map((p) =>
+              p.id === personToChange.id ? response.data : p
+            )
+          );
+          setColor({color: 'green'})
+          setMessage(`changed number for ${response.data.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          setNewName("");
+          setNewNumber("");
+        }).catch( error => {
+          console.log(error)
+          setColor({color: 'red'})
+          setMessage(`Information of ${changedPerson.name} has already been removed from server`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        });
+      }
+    } else {
+      personService
+        .create({ name: newName, number: newNumber })
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          setColor({color: 'green'})
+          setMessage(`added ${response.data.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch(error => {
+          console.log("error",error)
+          console.log("error.response",error.response)
+          setColor({color: 'red'})
+          setMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        });
     }
-  }, [])
+  };
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem(
-        'loggedBlogappUser', JSON.stringify(user)
-      )
-      blogService.setToken(user.token)
-      setUser(user)
-      console.log(user)
-      setUsername('')
-      setPassword('')
-
-    } catch (exception) {
-      setMessage('wrong credentials')
-      setTimeout(() => {
-        setMessage(null)
-      }, 2000)
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name}`)) {
+      personService.deletePerson(person.id).then( response => {
+        setColor({color: 'green'})
+        setMessage(`deleted ${response.data.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+      });
+      const people = persons.filter((p) => (p.id !== person.id ? p : ""));
+      setPersons(people);
     }
+  };
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <Notification message={message} color={color}/>
+      <Filter filter={filter} setFilter={setFilter} />
+      <h2>add new</h2>
+      <PersonForm
+        newName={newName}
+        newNumber={newNumber}
+        setNewName={setNewName}
+        setNewNumber={setNewNumber}
+        addName={addName}
+      />
+      <h2>Numbers</h2>
+      <Persons persons={persons} filter={filter} handleDelete={handleDelete} />
+    </div>
+  );
+};
+
+const Notification = ({ message, color }) => {
+  if (message === null) {
+    return null
   }
 
-
-  const logOut = () => {
-    console.log('log out')
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
-  }
-
-  const submitNewBlog = async (newBlog) => {
-    console.log('lol')
-    const sentBlog = await blogService.create(newBlog)
-    sentBlog.user = user
-    setMessage(`a new blog ${sentBlog.title} by ${sentBlog.author}`)
-    setTimeout(() => {
-      setMessage(null)
-    }, 2000)
-
-    console.log(sentBlog)
-
-    setBlogs(blogs.concat(sentBlog))
-
-  }
-
-  const updateBlogs = async (updatedBlog, id) => {
-    const updatedLikes = await blogService.update(id, updatedBlog)
-    console.log(updatedLikes)
-    updatedLikes.user = updatedBlog.user
-    const updatedBlogs = blogs.map(b => b.id === updatedLikes.id ? updatedLikes : b)
-    setBlogs(updatedBlogs)
-  }
-
-  const deleteBlog = async id => {
-    const deletedBlog = await blogService.deleteBlog(id)
-    console.log(deletedBlog)
-    const newBlogs = blogs.filter(b => b.id !== id)
-    setBlogs(newBlogs)
-    console.log(blogs)
-  }
-
-  if (user === null) {
-    return (
-      <div>
-        <div>{message}</div>
-        <h2>Log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            username <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password{' '}
-            <input
-              type="password"
-              name="Password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type='submit'>login</button>
-        </form>
-      </div>
-    )
-  }
-
-  else {
-    return (
-      <div>
-        <div>{message}</div>
-        <h2>blogs</h2>
-        <div>{user.username} logged in
-          <button onClick={logOut}>log out</button>
-        </div>
-        <Togglable buttonLabel="new blog">
-          <AddBlog submitNewBlog={submitNewBlog} />
-        </Togglable>
-        {blogs.sort((a, b) => b.likes - a.likes).map((blog) => (
-          <Blog key={blog.id} user={user} blog={blog} updateBlogs={updateBlogs} deleteBlog={deleteBlog} />
-        ))}
-      </div>
-    )
-  }
+  return (
+    <div className="error" style={color}>
+      {message}
+    </div>
+  )
 }
 
-export default App
+const PersonForm = ({
+  addName,
+  setNewName,
+  setNewNumber,
+  newName,
+  newNumber,
+}) => {
+  return (
+    <>
+      <form onSubmit={addName}>
+        <div>
+          name:{" "}
+          <input value={newName} onChange={(e) => setNewName(e.target.value)} />
+        </div>
+        <div>
+          number:{" "}
+          <input
+            value={newNumber}
+            onChange={(e) => setNewNumber(e.target.value)}
+          />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+    </>
+  );
+};
+
+const Persons = ({ persons, filter, handleDelete }) => {
+  return (
+    <>
+      <div>
+        {persons
+          .filter((p) => p.name.toLowerCase().includes(filter.toLowerCase()))
+          .map((p) => {
+            return (
+              <div key={p.id}>
+                {p.name} {p.number}{" "}
+                <button onClick={() => handleDelete(p)}>delete</button>
+              </div>
+            );
+          })}
+      </div>
+    </>
+  );
+};
+
+const Filter = ({ filter, setFilter }) => {
+  return (
+    <>
+      <div>
+        filter shown with{" "}
+        <input
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+      </div>
+    </>
+  );
+};
+export default App;

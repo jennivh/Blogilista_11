@@ -23,12 +23,13 @@ jobs:
           cd ./client
           npm i
       - name: Lint frontend
-        run: npm run lint:client
-      - name: Test vitest
-        run: npm test:vitest
-      - name: Test playwright
-        run: npm test:playwright
-      - name: Test Backend
-        run: npm test
+        run: |
+          cd ./client
+          npm run lint
+      - name: Lint backend
+        run: |
+          cd ./server
+          npm run lint
+   
 
    

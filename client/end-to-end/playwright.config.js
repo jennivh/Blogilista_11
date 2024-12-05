@@ -1,16 +1,15 @@
 import { defineConfig } from '@playwright/test'
 
-const PORT = process.env.PORT || 3003
 
 export default defineConfig({
   testDir: './tests',
   webServer: {
-    command: 'cd ../../server && npm run start:test',
+    command: 'cd ../client && npm run dev',
     port: PORT,
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: `http://localhost:5173`,
     browserName: 'chromium',
     headless: true,
   },

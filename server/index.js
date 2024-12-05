@@ -1,7 +1,8 @@
 require('dotenv').config()
 const express = require('express')
-const app = express()
 const { static: serveStatic } = express
+const app = express()
+const path = require('path')
 const Person = require('./models/person')
 const cors = require('cors')
 app.use(cors())
@@ -9,10 +10,12 @@ app.use(express.json())
 app.use(express.static('dist'))
 const morgan = require('morgan')
 
+app.use(express.static(path.join(__dirname, 'dist')));
+
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status - :response-time ms :body'))
 
-app.use(serveStatic('dist'))
+
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then( p => {

@@ -4,7 +4,7 @@ import { defineConfig } from '@playwright/test'
 export default defineConfig({
   testDir: './tests',
   webServer: {
-    command: 'cd ./client && npm run dev',
+    command: 'npm run dev',
     port: 5173,
     reuseExistingServer: !process.env.CI,
   },

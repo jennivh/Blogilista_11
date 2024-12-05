@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
 
 jobs:
   deployment_pipeline:
@@ -30,6 +33,10 @@ jobs:
         run: |
           cd ./server
           npm run lint
+      - name: Build frontend
+        run: |
+          cd ./client
+          npm run build
    
 
    

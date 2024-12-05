@@ -5,7 +5,7 @@ export default defineConfig({
   testDir: './tests',
   webServer: {
     command: 'cd ../client && npm run dev',
-    port: PORT,
+    port: 5173,
     reuseExistingServer: !process.env.CI,
   },
   use: {

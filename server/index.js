@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const Person = require('./models/person')
+const path = require('path')
 const cors = require('cors')
 app.use(cors())
 app.use(express.json())
@@ -33,11 +34,10 @@ app.use(morgan(':method :url :status - :response-time ms :body'))
   }
 ] */
 
-  app.get('/', (_req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
-  })
+app.get('/', (_req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
+})
   
-
 
 app.post('/reset', async (request, response) => {
   await Person.deleteMany({})

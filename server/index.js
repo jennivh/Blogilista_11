@@ -12,7 +12,7 @@ const morgan = require('morgan')
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status - :response-time ms :body'))
 
-
+app.use(serveStatic('dist'))
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then( p => {
@@ -87,7 +87,7 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.use(express.static(path.resolve(__dirname, 'dist')))
+
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })

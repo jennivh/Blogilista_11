@@ -47,6 +47,8 @@ jobs:
         run: |
           cd ./client/end-to-end
           npx playwright test
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
    
    
    

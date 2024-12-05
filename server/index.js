@@ -34,11 +34,10 @@ app.use(morgan(':method :url :status - :response-time ms :body'))
   }
 ] */
 
-app.get('/', (_req, res) => {
-  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
+app.get('/', (request, response) => {
+  response.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
 })
   
-
 app.post('/reset', async (request, response) => {
   await Person.deleteMany({})
   response.status(204).end()

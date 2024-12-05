@@ -1,17 +1,16 @@
-import defineConfig from'@playwright/test'
+import { defineConfig } from '@playwright/test'
 
 const PORT = process.env.PORT || 3003
-const BASE_URL = `http://localhost:${PORT}`
 
 export default defineConfig({
   testDir: './tests',
   webServer: {
-    command: 'cd ../server && npm run start',
+    command: 'cd ../../server && npm run start:test',
     port: PORT,
     reuseExistingServer: !process.env.CI,
   },
   use: {
-    baseURL: BASE_URL,
+    baseURL: `http://localhost:${PORT}`,
     browserName: 'chromium',
     headless: true,
   },

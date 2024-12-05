@@ -43,7 +43,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: |
-          cd ./client/tests
+          cd ./client/end-to-end/tests
           npx playwright test
    
    

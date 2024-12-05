@@ -43,7 +43,6 @@ app.post('/reset', async (request, response) => {
   response.status(204).end()
 })
 
-module.exports = router
 app.get('/api/persons', (request, response) => {
   Person.find({}).then( p => {
     console.log(p)

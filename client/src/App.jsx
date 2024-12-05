@@ -91,7 +91,7 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <Notification message={message} color={color}/>
       <Filter filter={filter} setFilter={setFilter} />
       <h2>add new</h2>
@@ -130,16 +130,18 @@ const PersonForm = ({
   return (
     <>
       <form onSubmit={addName}>
-        <div>
+        <label>
           name:{" "}
           <input value={newName} onChange={(e) => setNewName(e.target.value)} />
-        </div>
+        </label>
         <div>
+        <label>
           number:{" "}
           <input
             value={newNumber}
             onChange={(e) => setNewNumber(e.target.value)}
           />
+        </label>
         </div>
         <div>
           <button type="submit">add</button>

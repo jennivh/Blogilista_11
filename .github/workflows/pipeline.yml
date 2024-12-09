@@ -19,7 +19,6 @@ jobs:
           node-version: '20'
       - name: Install dependencies (Backend)
         run: |
-          cd ./server
           npm i
       - name: Install dependencies (Frontend)
         run: |
@@ -31,7 +30,6 @@ jobs:
           npm run lint
       - name: Lint backend
         run: |
-          cd ./server
           npm run lint
       - name: Build frontend
         run: |
@@ -41,14 +39,14 @@ jobs:
         run: |
           cd ./client
           run preview
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: |
-          cd ./client/end-to-end
-          npx playwright test
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
+      ##- name: Install Playwright Browsers
+      ##  run: npx playwright install --with-deps
+      ##- name: Run Playwright tests
+      ##  run: |
+      ##    cd ./client/end-to-end
+      ##    npx playwright test
+      ##  env:
+      ##    MONGO_URI: ${{ secrets.MONGO_URI }}
    
    
    

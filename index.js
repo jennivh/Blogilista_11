@@ -9,7 +9,7 @@ app.use(express.json())
 app.use(express.static('dist'))
 const morgan = require('morgan')
 
-app.use(express.static(path.join(__dirname, 'dist')))
+app.use(express.static(path.join(__dirname, 'client/dist')))
 
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status - :response-time ms :body'))

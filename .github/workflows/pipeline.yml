@@ -43,7 +43,7 @@ jobs:
           npx playwright test
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
-   
+      
    
    
 

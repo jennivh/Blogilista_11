@@ -7,6 +7,7 @@ echo "Build script"
 npm install
 cd ./client
 npm install
-npm run build
 cd ..
+npm run build
+cd ./client
 npm run build
